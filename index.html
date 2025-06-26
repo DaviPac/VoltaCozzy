@@ -8,14 +8,15 @@
     body {
       margin: 0;
       background: #000;
+      overflow: hidden;
     }
 
     #score {
       position: absolute;
-      top: 20px;
-      left: 20px;
+      top: 10px;
+      left: 10px;
       color: white;
-      font-size: 30px;
+      font-size: 20px;
       font-family: sans-serif;
       z-index: 2;
     }
@@ -42,7 +43,7 @@
 <body>
 
 <div id="score">Pontos: 1</div>
-<canvas id="gameCanvas" width="1280" height="720"></canvas>
+<canvas id="gameCanvas" width="640" height="360"></canvas>
 
 <div id="gameOverScreen">
   <img src="ima/gameover.png" alt="Game Over" />
@@ -73,33 +74,33 @@
   let pontos = 1;
   let gameOver = false;
 
-  const bgSpeed = 6;
-  const playerSpeed = 4;
-  const balaSpeed = 8;
-  const cuscuzSpeed = 3;
+  const bgSpeed = 3;
+  const playerSpeed = 2;
+  const balaSpeed = 4;
+  const cuscuzSpeed = 2;
 
   let bgX = 0;
 
   const player = {
-    x: 200,
-    y: 300,
-    width: 150,
-    height: 150,
+    x: 100,
+    y: 150,
+    width: 75,
+    height: 75,
   };
 
   const bala = {
     x: player.x,
     y: player.y,
-    width: 50,
-    height: 50,
+    width: 25,
+    height: 25,
     active: false,
   };
 
   const cuscuz = {
     x: 500,
-    y: 360,
-    width: 50,
-    height: 50,
+    y: 150,
+    width: 25,
+    height: 25,
   };
 
   const keys = {};
@@ -107,13 +108,13 @@
   window.addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
 
   function resetBala() {
-    bala.x = player.x + player.width - 20;
+    bala.x = player.x + player.width - 10;
     bala.y = player.y + player.height / 2 - bala.height / 2;
     bala.active = false;
   }
 
   function respawnCuscuz() {
-    cuscuz.x = WIDTH + 70;
+    cuscuz.x = WIDTH + 30;
     cuscuz.y = Math.floor(Math.random() * (HEIGHT - cuscuz.height));
   }
 
@@ -140,13 +141,13 @@
 
     if (keys[' '] && !bala.active) {
       bala.active = true;
-      bala.x = player.x + player.width - 20;
+      bala.x = player.x + player.width - 10;
       bala.y = player.y + player.height / 2 - bala.height / 2;
     }
 
     if (bala.active) {
       bala.x += balaSpeed;
-      if (bala.x > WIDTH + 50) resetBala();
+      if (bala.x > WIDTH + 25) resetBala();
     } else {
       bala.x = player.x;
       bala.y = player.y + player.height / 2 - bala.height / 2;
@@ -158,14 +159,12 @@
       showGameOver();
     }
 
-    // 🔴 SE ENCOSTAR NO CUSCUZ → GAME OVER
     if (rectsCollide(player, cuscuz)) {
       gameOver = true;
       showGameOver();
       return;
     }
 
-    // 🟢 SE BALA ACERTAR O CUSCUZ → GANHA PONTO
     if (bala.active && rectsCollide(bala, cuscuz)) {
       pontos++;
       respawnCuscuz();
